@@ -1,8 +1,6 @@
 package com.snspro.edusystem
 
-import android.content.Context
 import android.os.Bundle
-import android.util.DisplayMetrics
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.runtime.Composable
@@ -10,7 +8,6 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.snspro.edusystem.database.MyDBHelper
-import com.snspro.edusystem.model.Mentor
 import com.snspro.edusystem.ui.Screens.HomeScreen
 import com.snspro.edusystem.ui.Screens.courses.CoursesScreen
 import com.snspro.edusystem.ui.Screens.groups.GroupsScreen
