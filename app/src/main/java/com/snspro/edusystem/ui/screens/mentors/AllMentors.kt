@@ -1,4 +1,4 @@
-package com.snspro.edusystem.ui.Screens.mentors
+package com.snspro.edusystem.ui.screens.mentors
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -32,7 +32,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import com.snspro.edusystem.R
 import com.snspro.edusystem.database.EducationService
@@ -41,7 +40,7 @@ import com.snspro.edusystem.ui.theme.PurpleGrey80
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun MentorsScreen(
+fun AllMentorsScreen(
    database: EducationService,
    onBackClick: () -> Unit,
    addMentorClick: () -> Unit,

@@ -107,15 +107,20 @@ class MyDBHelper(context: Context) : SQLiteOpenHelper(context, DB_NAME, null, DB
       return Mentor(1,"","", "", "", "error")
    }
 
-   override fun editMentor(id: Long, mentor: Mentor) {
+   override fun editMentor(oldMentorId: Long, newMentor: Mentor) {
       val database = this.writableDatabase
       val contentValues = ContentValues()
-      contentValues.put(MENTOR_FIRST_NAME, mentor.firstName)
-      contentValues.put(MENTOR_LAST_NAME, mentor.lastName)
-      contentValues.put(MENTOR_PROFESSION, mentor.profession)
-      contentValues.put(MENTOR_LEVEL, mentor.level)
-      contentValues.put(MENTOR_DESCRIPTION, mentor.description)
-      database.update(MENTOR_TABLE, contentValues, "$MENTOR_ID = ?", arrayOf(id.toString()))
+      contentValues.put(MENTOR_FIRST_NAME, newMentor.firstName)
+      contentValues.put(MENTOR_LAST_NAME, newMentor.lastName)
+      contentValues.put(MENTOR_PROFESSION, newMentor.profession)
+      contentValues.put(MENTOR_LEVEL, newMentor.level)
+      contentValues.put(MENTOR_DESCRIPTION, newMentor.description)
+      database.update(
+         MENTOR_TABLE,
+         contentValues,
+         "$MENTOR_ID = ?",
+         arrayOf(oldMentorId.toString())
+      )
    }
 
    override fun deleteMentor(id: Long) {

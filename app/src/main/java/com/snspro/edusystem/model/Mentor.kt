@@ -7,4 +7,9 @@ data class Mentor(
    val profession: String,
    val level: String,
    val description: String
-)
+) {
+   fun fullName(): String {
+      return "$firstName $lastName"
+   }
+
+}

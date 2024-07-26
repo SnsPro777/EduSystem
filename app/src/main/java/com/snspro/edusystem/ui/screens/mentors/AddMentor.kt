@@ -1,4 +1,4 @@
-package com.snspro.edusystem.ui.Screens.mentors
+package com.snspro.edusystem.ui.screens.mentors
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
@@ -35,8 +35,6 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.snspro.edusystem.database.EducationService
 import com.snspro.edusystem.model.Mentor
-import com.snspro.edusystem.ui.theme.Purple80
-import com.snspro.edusystem.ui.theme.PurpleGrey80
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -166,7 +164,7 @@ private fun Field(
    OutlinedTextField(
       modifier = modifier
          .fillMaxWidth()
-         .height(66.dp)
+         .height(56.dp)
          .padding(horizontal = 5.dp),
       value = value,
       onValueChange = onValueChange,

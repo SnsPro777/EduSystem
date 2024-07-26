@@ -1,4 +1,4 @@
-package com.snspro.edusystem.ui.Screens.courses
+package com.snspro.edusystem.ui.screens.courses
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
@@ -32,7 +32,7 @@ import androidx.compose.ui.window.Dialog
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun CoursesScreen(
+fun AllCoursesScreen(
    onBackClick: () -> Unit
 ) {
    Scaffold(

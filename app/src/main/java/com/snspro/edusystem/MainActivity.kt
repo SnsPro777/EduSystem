@@ -6,14 +6,16 @@ import androidx.activity.compose.setContent
 import androidx.compose.runtime.Composable
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import androidx.navigation.compose.navigation
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.toRoute
 import com.snspro.edusystem.database.MyDBHelper
-import com.snspro.edusystem.ui.Screens.HomeScreen
-import com.snspro.edusystem.ui.Screens.courses.CoursesScreen
-import com.snspro.edusystem.ui.Screens.groups.GroupsScreen
-import com.snspro.edusystem.ui.Screens.mentors.AddMentorScreen
-import com.snspro.edusystem.ui.Screens.mentors.MentorDetailScreen
-import com.snspro.edusystem.ui.Screens.mentors.MentorsScreen
+import com.snspro.edusystem.ui.screens.HomeScreen
+import com.snspro.edusystem.ui.screens.courses.AllCoursesScreen
+import com.snspro.edusystem.ui.screens.groups.CourseGroupsScreen
+import com.snspro.edusystem.ui.screens.mentors.AddMentorScreen
+import com.snspro.edusystem.ui.screens.mentors.AllMentorsScreen
+import com.snspro.edusystem.ui.screens.mentors.MentorDetailScreen
 import com.snspro.edusystem.ui.theme.EduSystemTheme
 
 class MainActivity : ComponentActivity() {
@@ -28,68 +30,78 @@ class MainActivity : ComponentActivity() {
          }
       }
    }
+
    @Composable
    fun EduSystemApp() {
       val navController = rememberNavController()
-      NavHost(
-         navController = navController,
-         startDestination = D.Home(),
-      ) {
-         composable(D.Home()) {
+
+      NavHost(navController = navController, startDestination = Home) {
+         composable<Home> {
             HomeScreen(
-               kurslarClick = { navController.navigate(D.Cources()) },
-               guruhlarClick = { navController.navigate(D.Groups()) },
-               mentorlarClick = { navController.navigate(D.Mentors()) }
+               kurslarClick = { navController.navigate(route = Courses) },
+               guruhlarClick = { navController.navigate(route = Groups) },
+               mentorlarClick = { navController.navigate(route = Mentors) }
             )
          }
 
-         composable(D.Cources()) {
-            CoursesScreen(
-               onBackClick = { navController.popBackStack() }
-            )
-         }
+         navigation<Courses>(startDestination = AllCourses) {
 
-         composable(D.Groups()) {
-            GroupsScreen()
-         }
+            composable<AllCourses> {
+               AllCoursesScreen(
+                  onBackClick = { navController.popBackStack() }
+               )
+            }
 
-         composable(D.Mentors()) {
-            MentorsScreen(
-               database = db,
-               onBackClick = {
-                             navController.popBackStack()
-               },
-               addMentorClick = {
-                  navController.navigate(D.AddMentor())
-               },
-               mentorDetailScreenClick = {mentor ->
-                  navController.navigate("${D.MentorDetail()}/${mentor.id}")
-               }
-            )
-         }
+            composable<CourseDetail> { }
+            composable<AddStudent> { }
 
-         composable(D.AddMentor()){
-           AddMentorScreen(
-              database = db,
-              onBackClick = {
-                 navController.popBackStack()
-              }
-           )
-         }
-
-         composable("${D.MentorDetail()}/{mentorId}"){
-            it.arguments?.getString("mentorId")
-               ?.let { it1 ->
-                  MentorDetailScreen(
-                     database = db,
-                     id = it1.toLong()
-                  )
-
-               }
          }
 
 
+
+         navigation<Groups>(startDestination = CourseGroups) {
+            composable<CourseGroups> {
+               CourseGroupsScreen()
+            }
+            composable<AllGroups> { }
+            composable<GroupDetail> { }
+         }
+
+
+         navigation<Mentors>(startDestination = AllMentors) {
+            composable<AllMentors> {
+               AllMentorsScreen(
+                  database = db,
+                  onBackClick = {
+                     navController.popBackStack()
+                  },
+                  addMentorClick = {
+                     navController.navigate(route = AddMentor)
+                  },
+                  mentorDetailScreenClick = {
+                     navController.navigate(MentorDetail(it.id))
+                  }
+               )
+            }
+            composable<AddMentor> {
+               AddMentorScreen(
+                  database = db,
+                  onBackClick = { navController.popBackStack() }
+               )
+            }
+            composable<MentorDetail> {
+               val mentorId = it.toRoute<MentorDetail>().mentorId
+               MentorDetailScreen(
+                  database = db,
+                  id = mentorId,
+                  onBackClick = { navController.popBackStack() }
+               )
+            }
+
+         }
       }
+
+
    }
 }
 

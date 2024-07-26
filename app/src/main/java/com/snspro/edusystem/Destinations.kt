@@ -1,14 +1,43 @@
 package com.snspro.edusystem
 
-enum class D(val route: String){
-   Home("home"),
-   Cources("courses"),
-   Groups("groups"),
-   Mentors("mentors"),
-   AddMentor("add_mentor"),
-   MentorDetail("mentor_detail_screen");
+import kotlinx.serialization.Serializable
 
-   operator fun invoke(): String{
-      return route
-   }
-}
+
+@Serializable
+object Home
+
+@Serializable
+object Courses
+@Serializable
+object Groups
+@Serializable
+object Mentors
+
+// todo: course routes
+@Serializable
+object AllCourses
+@Serializable
+object CourseDetail
+@Serializable
+object AddStudent
+
+// todo: Groups routes
+@Serializable
+object CourseGroups
+@Serializable
+object AllGroups
+@Serializable
+object GroupDetail
+
+// todo: Mentor routes
+@Serializable
+object AllMentors
+@Serializable
+object AddMentor
+@Serializable
+data class MentorDetail(val mentorId: Long)
+
+
+
+
+
