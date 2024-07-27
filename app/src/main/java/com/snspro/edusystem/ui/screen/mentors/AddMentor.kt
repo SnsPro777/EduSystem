@@ -182,7 +182,7 @@ private fun Field(
       maxLines = maxLines,
       shape = RoundedCornerShape(10.dp),
       colors = TextFieldDefaults.outlinedTextFieldColors(
-         containerColor = Color.Gray.copy(alpha = 0.5f)
+         containerColor = Color.Gray.copy(alpha = 0.2f)
       )
    )
    Spacer(modifier = Modifier.height(6.dp))
