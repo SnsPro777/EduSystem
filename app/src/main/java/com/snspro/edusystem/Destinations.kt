@@ -1,5 +1,6 @@
 package com.snspro.edusystem
 
+import com.snspro.edusystem.model.Mentor
 import kotlinx.serialization.Serializable
 
 
@@ -33,7 +34,7 @@ object GroupDetail
 @Serializable
 object AllMentors
 @Serializable
-object AddMentor
+data class AddMentor(val action: String, val id: Long)
 @Serializable
 data class MentorDetail(val mentorId: Long)
 

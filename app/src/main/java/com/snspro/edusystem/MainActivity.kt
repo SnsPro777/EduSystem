@@ -10,12 +10,12 @@ import androidx.navigation.compose.navigation
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.toRoute
 import com.snspro.edusystem.database.MyDBHelper
-import com.snspro.edusystem.ui.screens.HomeScreen
-import com.snspro.edusystem.ui.screens.courses.AllCoursesScreen
-import com.snspro.edusystem.ui.screens.groups.CourseGroupsScreen
-import com.snspro.edusystem.ui.screens.mentors.AddMentorScreen
-import com.snspro.edusystem.ui.screens.mentors.AllMentorsScreen
-import com.snspro.edusystem.ui.screens.mentors.MentorDetailScreen
+import com.snspro.edusystem.ui.screen.HomeScreen
+import com.snspro.edusystem.ui.screen.courses.AllCoursesScreen
+import com.snspro.edusystem.ui.screen.groups.CourseGroupsScreen
+import com.snspro.edusystem.ui.screen.mentors.AddMentorScreen
+import com.snspro.edusystem.ui.screen.mentors.AllMentorsScreen
+import com.snspro.edusystem.ui.screen.mentors.MentorDetailScreen
 import com.snspro.edusystem.ui.theme.EduSystemTheme
 
 class MainActivity : ComponentActivity() {
@@ -76,7 +76,7 @@ class MainActivity : ComponentActivity() {
                      navController.popBackStack()
                   },
                   addMentorClick = {
-                     navController.navigate(route = AddMentor)
+                     navController.navigate(route = AddMentor(action = "add", id = 1))
                   },
                   mentorDetailScreenClick = {
                      navController.navigate(MentorDetail(it.id))
@@ -84,17 +84,42 @@ class MainActivity : ComponentActivity() {
                )
             }
             composable<AddMentor> {
-               AddMentorScreen(
-                  database = db,
-                  onBackClick = { navController.popBackStack() }
-               )
+               val action = it.toRoute<AddMentor>().action
+               val id = it.toRoute<AddMentor>().id
+               if (action == "add") {
+                  AddMentorScreen(
+                     database = db,
+                     onBackClick = { navController.popBackStack() },
+                     actionClick = { mentor ->
+                        db.addMentor(mentor)
+                        navController.popBackStack()
+                     },
+                     id = 1,
+                     actionType = action
+                  )
+               } else if (action == "edit") {
+                  AddMentorScreen(
+                     database = db,
+                     onBackClick = { navController.popBackStack()},
+                     actionClick = { mentor ->
+                        db.editMentor(id, mentor)
+                        navController.popBackStack()
+                     },
+                     id = id,
+                     actionType = action
+                  )
+               }
+
             }
             composable<MentorDetail> {
                val mentorId = it.toRoute<MentorDetail>().mentorId
                MentorDetailScreen(
                   database = db,
                   id = mentorId,
-                  onBackClick = { navController.popBackStack() }
+                  onBackClick = { navController.popBackStack() },
+                  onEditClick = { mentor ->
+                     navController.navigate(route = AddMentor(action = "edit", mentor.id))
+                  }
                )
             }
 

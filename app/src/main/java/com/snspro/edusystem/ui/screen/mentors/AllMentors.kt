@@ -1,4 +1,4 @@
-package com.snspro.edusystem.ui.screens.mentors
+package com.snspro.edusystem.ui.screen.mentors
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable

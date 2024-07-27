@@ -1,4 +1,4 @@
-package com.snspro.edusystem.ui.screens.mentors
+package com.snspro.edusystem.ui.screen.mentors
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -27,6 +27,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import com.snspro.edusystem.R
 import com.snspro.edusystem.database.EducationService
+import com.snspro.edusystem.model.Mentor
 import com.snspro.edusystem.ui.common.EduScaffold
 import com.snspro.edusystem.ui.common.TopBarIcon
 import com.snspro.edusystem.ui.theme.PurpleGrey80
@@ -35,7 +36,8 @@ import com.snspro.edusystem.ui.theme.PurpleGrey80
 fun MentorDetailScreen(
    database: EducationService,
    id: Long,
-   onBackClick: () -> Unit
+   onBackClick: () -> Unit,
+   onEditClick: (Mentor) -> Unit
 ) {
    val mentor = database.getMentorById(id)
    EduScaffold(
@@ -43,7 +45,9 @@ fun MentorDetailScreen(
       title = mentor.fullName(),
       icons = {
          TopBarIcon(
-            onClick = { },
+            onClick = {
+                      onEditClick(mentor)
+            },
             icon = Icons.Default.Edit
          )
          TopBarIcon(
@@ -123,7 +127,7 @@ fun MentorDetailScreen(
             )
          ) {
             Text(
-               modifier = Modifier.fillMaxSize(),
+               modifier = Modifier.fillMaxSize().padding(15.dp),
                text = mentor.description,
                style = MaterialTheme.typography.titleMedium,
                maxLines = Int.MAX_VALUE

@@ -1,4 +1,4 @@
-package com.snspro.edusystem.ui.screens.courses
+package com.snspro.edusystem.ui.screen.courses
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column

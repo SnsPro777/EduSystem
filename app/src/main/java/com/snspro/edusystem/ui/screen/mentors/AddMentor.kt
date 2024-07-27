@@ -1,4 +1,4 @@
-package com.snspro.edusystem.ui.screens.mentors
+package com.snspro.edusystem.ui.screen.mentors
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
@@ -40,8 +40,12 @@ import com.snspro.edusystem.model.Mentor
 @Composable
 fun AddMentorScreen(
    database: EducationService,
-   onBackClick: () -> Unit
+   onBackClick: () -> Unit,
+   actionClick: (Mentor) -> Unit,
+   id: Long,
+   actionType: String
 ) {
+   val oldMentor = database.getMentorById(id)
    Scaffold(
       modifier = Modifier.fillMaxSize(),
       topBar = {
@@ -62,7 +66,7 @@ fun AddMentorScreen(
                )
             }
             Text(
-               text = "Yangi Mentor",
+               text = if (actionType == "add") "Yangi Mentor" else "Ma'lumotlarni yangilash",
                textAlign = TextAlign.Center,
                style = MaterialTheme.typography.titleLarge,
                color = MaterialTheme.colorScheme.onPrimary,
@@ -77,19 +81,19 @@ fun AddMentorScreen(
             .padding(innerPadding)
       ) {
          var firstName by remember {
-            mutableStateOf("")
+            mutableStateOf(if(actionType == "add") "" else oldMentor.firstName)
          }
          var lastName by remember {
-            mutableStateOf("")
+            mutableStateOf(if(actionType == "add") "" else oldMentor.lastName)
          }
          var profession by remember {
-            mutableStateOf("")
+            mutableStateOf(if(actionType == "add") "" else oldMentor.profession)
          }
          var level by remember {
-            mutableStateOf("")
+            mutableStateOf(if(actionType == "add") "" else oldMentor.level)
          }
          var description by remember {
-            mutableStateOf("")
+            mutableStateOf(if(actionType == "add") "" else oldMentor.description)
          }
          Field(
             value = firstName,
@@ -131,13 +135,12 @@ fun AddMentorScreen(
          Spacer(modifier = Modifier.height(10.dp))
          Button(
             onClick = {
-               database.addMentor(Mentor(
+               actionClick(Mentor(
                   firstName = firstName,
                   lastName = lastName,
                   profession = profession,
                   level = level,
-                  description = description
-               ))
+                  description = description))
             },
             modifier = Modifier
                .align(Alignment.End)
@@ -164,7 +167,7 @@ private fun Field(
    OutlinedTextField(
       modifier = modifier
          .fillMaxWidth()
-         .height(56.dp)
+         .height(66.dp)
          .padding(horizontal = 5.dp),
       value = value,
       onValueChange = onValueChange,
