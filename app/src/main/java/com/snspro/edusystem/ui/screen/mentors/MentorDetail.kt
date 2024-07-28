@@ -1,5 +1,9 @@
 package com.snspro.edusystem.ui.screen.mentors
 
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -10,19 +14,28 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Edit
+import androidx.compose.material.icons.filled.RemoveRedEye
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import com.snspro.edusystem.R
@@ -35,24 +48,27 @@ import com.snspro.edusystem.ui.theme.PurpleGrey80
 @Composable
 fun MentorDetailScreen(
    database: EducationService,
-   id: Long,
+   mentorId: Long,
    onBackClick: () -> Unit,
-   onEditClick: (Mentor) -> Unit
+   onEditClick: (Mentor) -> Unit,
+   onGroupClick: (Long) -> Unit,
+   onGroupViewClick: (Long) -> Unit,
+   onGroupEditClick: (Long) -> Unit
 ) {
-   val mentor = database.getMentorById(id)
+   val mentor = database.getMentorById(mentorId)
    EduScaffold(
       onBackClick = onBackClick,
       title = mentor.fullName(),
       icons = {
          TopBarIcon(
             onClick = {
-                      onEditClick(mentor)
+               onEditClick(mentor)
             },
             icon = Icons.Default.Edit
          )
          TopBarIcon(
             onClick = {
-               database.deleteMentor(id)
+               database.deleteMentor(mentorId)
                onBackClick()
             },
             icon = Icons.Default.Delete
@@ -127,13 +143,120 @@ fun MentorDetailScreen(
             )
          ) {
             Text(
-               modifier = Modifier.fillMaxSize().padding(15.dp),
+               modifier = Modifier
+                  .fillMaxSize()
+                  .padding(15.dp),
                text = mentor.description,
                style = MaterialTheme.typography.titleMedium,
                maxLines = Int.MAX_VALUE
             )
          }
+
+         Card(
+            modifier = Modifier
+               .fillMaxWidth()
+               .weight(1f)
+               .padding(start = 5.dp, end = 5.dp, bottom = 10.dp)
+               .verticalScroll(rememberScrollState()),
+            shape = RoundedCornerShape(10.dp),
+            colors = CardDefaults.cardColors(
+               containerColor = MaterialTheme.colorScheme.onPrimary,
+            ),
+            elevation = CardDefaults.cardElevation(
+               defaultElevation = 5.dp,
+               pressedElevation = 1.dp
+            )
+         ) {
+            var refreshCount by remember {
+               mutableStateOf(2)
+            }
+            if (refreshCount != 1) {
+               val groups = database.getGroupsByMentorId(mentorId)
+               if (groups.isEmpty()) {
+                  Text(
+                     text = "Guruhlar mavjud emas",
+                     style = MaterialTheme.typography.titleLarge,
+                     modifier = Modifier.align(Alignment.CenterHorizontally)
+                  )
+               } else {
+                  for (group in groups) {
+                     Row(
+                        modifier = Modifier
+                           .fillMaxWidth()
+                           .height(50.dp)
+                           .padding(vertical = 10.dp, horizontal = 5.dp)
+                           .clip(shape = RoundedCornerShape(5.dp))
+                           .background(Color(0xFFC1BFBF))
+                           .clickable {
+                              onGroupClick(group.id)
+                           },
+                        verticalAlignment = Alignment.CenterVertically
+                     ) {
+                        Spacer(modifier = Modifier.width(10.dp))
+                        Column {
+                           val count = database.getStudentCountByGroupId(group.id)
+                           Text(text = group.name, style = MaterialTheme.typography.titleMedium)
+                           Text(
+                              text = "o'quvchilar soni: $count",
+                              style = MaterialTheme.typography.labelMedium,
+                              color = Color(0xFF1D192B)
+                           )
+                        }
+                        Spacer(modifier = Modifier.weight(1f))
+                        Row(
+                           modifier = Modifier.fillMaxHeight(),
+                           horizontalArrangement = Arrangement.spacedBy(15.dp)
+                        ) {
+                           IconBox(
+                              background = Color.Green.copy(alpha = 0.7f),
+                              icon = Icons.Default.RemoveRedEye
+                           ) {
+                              onGroupViewClick(group.id)
+                           }
+                           IconBox(
+                              background = Color.Yellow.copy(alpha = 0.7f),
+                              icon = Icons.Default.Edit
+                           ) {
+                              onGroupEditClick(group.id)
+                           }
+                           IconBox(
+                              background = Color.Red.copy(alpha = 0.7f),
+                              icon = Icons.Default.Delete
+                           ) {
+                              database.deleteGroup(group.id)
+                              refreshCount += 1
+                           }
+                        }
+                     }
+                  }
+               }
+            }
+         }
+
       }
 
+   }
+}
+
+@Composable
+fun IconBox(
+   background: Color,
+   icon: ImageVector,
+   action: () -> Unit
+) {
+   Box(
+      modifier = Modifier
+         .width(30.dp)
+         .height(30.dp)
+         .background(background)
+         .clickable { action() },
+      contentAlignment = Alignment.Center
+   ) {
+      Icon(
+         imageVector = icon,
+         contentDescription = null,
+         tint = Color.Black,
+         modifier = Modifier.size(20.dp)
+      )
    }
 }

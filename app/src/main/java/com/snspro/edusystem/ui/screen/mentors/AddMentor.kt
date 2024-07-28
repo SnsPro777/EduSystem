@@ -35,6 +35,8 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.snspro.edusystem.database.EducationService
 import com.snspro.edusystem.model.Mentor
+import com.snspro.edusystem.ui.common.EduOutlinedTextField
+import com.snspro.edusystem.ui.common.TopBarIcon
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -57,14 +59,7 @@ fun AddMentorScreen(
             verticalAlignment = Alignment.CenterVertically,
          ) {
             Spacer(modifier = Modifier.width(18.dp))
-            IconButton(onClick = onBackClick) {
-               Icon(
-                  imageVector = Icons.Default.ArrowBack,
-                  contentDescription = null,
-                  modifier = Modifier.size(25.dp),
-                  tint = MaterialTheme.colorScheme.onPrimary
-               )
-            }
+            TopBarIcon(onClick = onBackClick, icon =Icons.Default.ArrowBack)
             Text(
                text = if (actionType == "add") "Yangi Mentor" else "Ma'lumotlarni yangilash",
                textAlign = TextAlign.Center,
@@ -95,35 +90,39 @@ fun AddMentorScreen(
          var description by remember {
             mutableStateOf(if(actionType == "add") "" else oldMentor.description)
          }
-         Field(
+         EduOutlinedTextField(
             value = firstName,
             onValueChange = {
                firstName = it
             },
-            label = "Familiyasi"
+            label = "Familiyasi",
+            modifier = Modifier.height(66.dp)
          )
-         Field(
+         EduOutlinedTextField(
             value = lastName,
             onValueChange = {
                lastName = it
             },
-            label = "Ismi"
+            label = "Ismi",
+            modifier = Modifier.height(66.dp)
          )
-         Field(
+         EduOutlinedTextField(
             value = profession,
             onValueChange = {
                profession = it
             },
-            label = "Ilmiy sohasi"
+            label = "Ilmiy sohasi",
+            modifier = Modifier.height(66.dp)
          )
-         Field(
+         EduOutlinedTextField(
             value = level,
             onValueChange = {
                level = it
             },
-            label = "Tajriba darajasi"
+            label = "Tajriba darajasi",
+            modifier = Modifier.height(66.dp)
          )
-         Field(
+         EduOutlinedTextField(
             value = description,
             onValueChange = {
                description = it
@@ -155,36 +154,4 @@ fun AddMentorScreen(
    }
 }
 
-@Composable
-@OptIn(ExperimentalMaterial3Api::class)
-private fun Field(
-   value: String,
-   onValueChange: (String) -> Unit,
-   label: String,
-   maxLines: Int = 1,
-   modifier: Modifier = Modifier
-) {
-   OutlinedTextField(
-      modifier = modifier
-         .fillMaxWidth()
-         .height(66.dp)
-         .padding(horizontal = 5.dp),
-      value = value,
-      onValueChange = onValueChange,
-      label = {
-         Text(
-            text = label,
-            style = MaterialTheme.typography.labelLarge,
-            modifier = Modifier.background(Color.Transparent)
-         )
-      },
-      textStyle = MaterialTheme.typography.titleLarge,
-      maxLines = maxLines,
-      shape = RoundedCornerShape(10.dp),
-      colors = TextFieldDefaults.outlinedTextFieldColors(
-         containerColor = Color.Gray.copy(alpha = 0.2f)
-      )
-   )
-   Spacer(modifier = Modifier.height(6.dp))
-}
 

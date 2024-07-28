@@ -11,7 +11,9 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.toRoute
 import com.snspro.edusystem.database.MyDBHelper
 import com.snspro.edusystem.ui.screen.HomeScreen
+import com.snspro.edusystem.ui.screen.courses.AddStudentScreen
 import com.snspro.edusystem.ui.screen.courses.AllCoursesScreen
+import com.snspro.edusystem.ui.screen.courses.CourseDetailScreen
 import com.snspro.edusystem.ui.screen.groups.CourseGroupsScreen
 import com.snspro.edusystem.ui.screen.mentors.AddMentorScreen
 import com.snspro.edusystem.ui.screen.mentors.AllMentorsScreen
@@ -48,12 +50,32 @@ class MainActivity : ComponentActivity() {
 
             composable<AllCourses> {
                AllCoursesScreen(
-                  onBackClick = { navController.popBackStack() }
+                  database = db,
+                  onBackClick = { navController.popBackStack() },
+                  onCourseItemClick = {
+                     navController.navigate(CourseDetail(it.id))
+                  }
                )
             }
 
-            composable<CourseDetail> { }
-            composable<AddStudent> { }
+            composable<CourseDetail> {
+               val courseId = it.toRoute<CourseDetail>().courseId
+               CourseDetailScreen(
+                  database = db,
+                  courseId = courseId,
+                  onBackClick = { navController.popBackStack() },
+                  addStudentClick = { course ->
+                     navController.navigate(AddStudent(course.id))
+                  }
+               )
+            }
+            composable<AddStudent> {
+               val courseId = it.toRoute<AddStudent>().courseId
+               AddStudentScreen(
+                  database = db,
+                  courseId = courseId,
+                  onBackClick = { navController.popBackStack() })
+            }
 
          }
 
@@ -100,7 +122,7 @@ class MainActivity : ComponentActivity() {
                } else if (action == "edit") {
                   AddMentorScreen(
                      database = db,
-                     onBackClick = { navController.popBackStack()},
+                     onBackClick = { navController.popBackStack() },
                      actionClick = { mentor ->
                         db.editMentor(id, mentor)
                         navController.popBackStack()
@@ -115,11 +137,14 @@ class MainActivity : ComponentActivity() {
                val mentorId = it.toRoute<MentorDetail>().mentorId
                MentorDetailScreen(
                   database = db,
-                  id = mentorId,
+                  mentorId = mentorId,
                   onBackClick = { navController.popBackStack() },
                   onEditClick = { mentor ->
                      navController.navigate(route = AddMentor(action = "edit", mentor.id))
-                  }
+                  },
+                  onGroupClick = {},
+                  onGroupViewClick = {},
+                  onGroupEditClick = {}
                )
             }
 

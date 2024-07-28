@@ -140,7 +140,7 @@ class MyDBHelper(context: Context) : SQLiteOpenHelper(context, DB_NAME, null, DB
       val database = this.writableDatabase
       val contentValues = ContentValues()
       contentValues.put(COURSE_NAME, course.name)
-      contentValues.put(COURSE_DESCRIPTION, course.id)
+      contentValues.put(COURSE_DESCRIPTION, course.description)
       return database.insert(COURSE_TABLE, null, contentValues)
    }
 
@@ -164,10 +164,10 @@ class MyDBHelper(context: Context) : SQLiteOpenHelper(context, DB_NAME, null, DB
       val database = this.readableDatabase
       val cursor = database.rawQuery("select * from $COURSE_TABLE where id == $id", null)
       if (cursor.moveToFirst()) {
-         val id = cursor.getLong(0)
+         val id1 = cursor.getLong(0)
          val name = cursor.getString(1)
          val description = cursor.getString(2)
-         return Course(id, name, description)
+         return Course(id1, name, description)
       }
       cursor.close()
       return Course(-1, "error", "error")

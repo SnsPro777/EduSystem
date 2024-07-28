@@ -18,9 +18,9 @@ object Mentors
 @Serializable
 object AllCourses
 @Serializable
-object CourseDetail
+data class CourseDetail(val courseId: Long)
 @Serializable
-object AddStudent
+data class AddStudent(val courseId: Long)
 
 // todo: Groups routes
 @Serializable

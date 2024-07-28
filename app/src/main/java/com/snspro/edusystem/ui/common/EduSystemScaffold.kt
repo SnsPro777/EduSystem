@@ -44,14 +44,7 @@ fun EduScaffold(
             verticalAlignment = Alignment.CenterVertically,
          ) {
             Spacer(modifier = Modifier.width(18.dp))
-            IconButton(onClick = onBackClick) {
-               Icon(
-                  imageVector = Icons.Default.ArrowBack,
-                  contentDescription = null,
-                  modifier = Modifier.size(25.dp),
-                  tint = MaterialTheme.colorScheme.onPrimary
-               )
-            }
+            TopBarIcon(onClick = onBackClick, icon = Icons.Default.ArrowBack)
             Text(
                text = title,
                textAlign = TextAlign.Center,
