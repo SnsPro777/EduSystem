@@ -1,6 +1,5 @@
 package com.snspro.edusystem
 
-import com.snspro.edusystem.model.Mentor
 import kotlinx.serialization.Serializable
 
 
@@ -26,7 +25,7 @@ data class AddStudent(val courseId: Long)
 @Serializable
 object CourseGroups
 @Serializable
-object AllGroups
+data class AllGroups(val courseId: Long)
 @Serializable
 object GroupDetail
 

@@ -194,18 +194,20 @@ class MyDBHelper(context: Context) : SQLiteOpenHelper(context, DB_NAME, null, DB
       val database = this.readableDatabase
       val result = ArrayList<Group>()
       val cursor = database.rawQuery(
-         "select * from $GROUP_TABLE, $COURSE_TABLE where $GROUP_IS_OPEN = 'opened' and $GROUP_COURSE_ID = $courseId",
+         "select * from $GROUP_TABLE, $COURSE_TABLE where $GROUP_IS_OPEN == 'opened' and $GROUP_COURSE_ID == $courseId",
          null
       )
       if (cursor.moveToFirst()){
+         do {
          val id = cursor.getLong(0)
          val name = cursor.getString(1)
          val dayOfWeek = cursor.getString(2)
          val timeOfDay = cursor.getString(3)
          val isOpen = cursor.getString(4)
-         val courseId = cursor.getLong(5)
+         val courseId1 = cursor.getLong(5)
          val mentorId = cursor.getLong(6)
-         result.add(Group(id, name, dayOfWeek, timeOfDay, isOpen, courseId, mentorId))
+         result.add(Group(id, name, dayOfWeek, timeOfDay, isOpen, courseId1, mentorId))
+         } while (cursor.moveToNext())
       }
       cursor.close()
       return result
@@ -215,10 +217,11 @@ class MyDBHelper(context: Context) : SQLiteOpenHelper(context, DB_NAME, null, DB
       val database = this.readableDatabase
       val result = ArrayList<Group>()
       val cursor = database.rawQuery(
-         "select * from $GROUP_TABLE, $COURSE_TABLE where $GROUP_IS_OPEN = 'opening' and $GROUP_COURSE_ID = $courseId",
+         "select * from $GROUP_TABLE, $COURSE_TABLE where $GROUP_IS_OPEN == 'opening' and $GROUP_COURSE_ID == $courseId",
          null
       )
       if (cursor.moveToFirst()){
+         do {
          val id = cursor.getLong(0)
          val name = cursor.getString(1)
          val dayOfWeek = cursor.getString(2)
@@ -227,6 +230,7 @@ class MyDBHelper(context: Context) : SQLiteOpenHelper(context, DB_NAME, null, DB
          val courseId1 = cursor.getLong(5)
          val mentorId = cursor.getLong(6)
          result.add(Group(id, name, dayOfWeek, timeOfDay, isOpen, courseId1, mentorId))
+         } while (cursor.moveToNext())
       }
       cursor.close()
       return result
@@ -259,6 +263,7 @@ class MyDBHelper(context: Context) : SQLiteOpenHelper(context, DB_NAME, null, DB
       val cursor =
          database.rawQuery("select * from $GROUP_TABLE where $GROUP_COURSE_ID = $courseId", null)
       if (cursor.moveToFirst()){
+         do {
          val id = cursor.getLong(0)
          val name = cursor.getString(1)
          val dayOfWeek = cursor.getString(2)
@@ -267,6 +272,7 @@ class MyDBHelper(context: Context) : SQLiteOpenHelper(context, DB_NAME, null, DB
          val courseId1 = cursor.getLong(5)
          val mentorId = cursor.getLong(6)
          result.add(Group(id, name, dayOfWeek, timeOfDay, isOpen, courseId1, mentorId))
+         } while (cursor.moveToNext())
       }
       cursor.close()
       return result
@@ -278,6 +284,7 @@ class MyDBHelper(context: Context) : SQLiteOpenHelper(context, DB_NAME, null, DB
       val cursor =
          database.rawQuery("select * from $GROUP_TABLE where $GROUP_MENTOR_ID = $mentorId", null)
       if (cursor.moveToFirst()){
+         do {
          val id = cursor.getLong(0)
          val name = cursor.getString(1)
          val dayOfWeek = cursor.getString(2)
@@ -286,6 +293,7 @@ class MyDBHelper(context: Context) : SQLiteOpenHelper(context, DB_NAME, null, DB
          val courseId1 = cursor.getLong(5)
          val mentorId1 = cursor.getLong(6)
          result.add(Group(id, name, dayOfWeek, timeOfDay, isOpen, courseId1, mentorId1))
+         }while (cursor.moveToNext())
       }
       cursor.close()
       return result

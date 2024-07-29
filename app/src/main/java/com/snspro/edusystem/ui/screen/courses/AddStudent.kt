@@ -14,6 +14,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.snspro.edusystem.database.EducationService
@@ -69,9 +70,10 @@ fun AddStudentScreen(
                database.addStudent(Student(1, first_name, last_name, groupId))
                onBackClick()
             },
-            shape = RoundedCornerShape(5.dp)
+            shape = RoundedCornerShape(5.dp),
+            modifier = Modifier.align(Alignment.End)
          ) {
-            Text(text = "Qo'shish", color = MaterialTheme.colorScheme.onPrimary)
+            Text(text = "  Qo'shish  ", color = MaterialTheme.colorScheme.onPrimary)
          }
       }
    }

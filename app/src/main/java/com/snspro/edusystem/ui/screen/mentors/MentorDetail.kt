@@ -18,14 +18,19 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Check
+import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.RemoveRedEye
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.Divider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -38,8 +43,10 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.snspro.edusystem.R
 import com.snspro.edusystem.database.EducationService
+import com.snspro.edusystem.model.Group
 import com.snspro.edusystem.model.Mentor
 import com.snspro.edusystem.ui.common.EduScaffold
 import com.snspro.edusystem.ui.common.TopBarIcon
@@ -152,90 +159,151 @@ fun MentorDetailScreen(
             )
          }
 
-         Card(
-            modifier = Modifier
-               .fillMaxWidth()
-               .weight(1f)
-               .padding(start = 5.dp, end = 5.dp, bottom = 10.dp)
-               .verticalScroll(rememberScrollState()),
-            shape = RoundedCornerShape(10.dp),
-            colors = CardDefaults.cardColors(
-               containerColor = MaterialTheme.colorScheme.onPrimary,
-            ),
-            elevation = CardDefaults.cardElevation(
-               defaultElevation = 5.dp,
-               pressedElevation = 1.dp
-            )
-         ) {
-            var refreshCount by remember {
-               mutableStateOf(2)
-            }
-            if (refreshCount != 1) {
-               val groups = database.getGroupsByMentorId(mentorId)
-               if (groups.isEmpty()) {
-                  Text(
-                     text = "Guruhlar mavjud emas",
-                     style = MaterialTheme.typography.titleLarge,
-                     modifier = Modifier.align(Alignment.CenterHorizontally)
-                  )
-               } else {
-                  for (group in groups) {
+         GroupsList(
+            database,
+            groups = database.getGroupsByMentorId(mentorId),
+            onGroupClick,
+            onGroupViewClick,
+            onGroupEditClick
+         )
+
+      }
+
+   }
+}
+
+@Composable
+fun GroupsList(
+   database: EducationService,
+   groups: List<Group>,
+   onGroupClick: (Long) -> Unit,
+   onGroupViewClick: (Long) -> Unit,
+   onGroupEditClick: (Long) -> Unit
+) {
+   Column {
+      Card(
+         modifier = Modifier
+            .fillMaxWidth()
+            .weight(1f)
+            .padding(start = 5.dp, end = 5.dp, bottom = 10.dp)
+            .verticalScroll(rememberScrollState()),
+         shape = RoundedCornerShape(10.dp),
+         colors = CardDefaults.cardColors(
+            containerColor = MaterialTheme.colorScheme.onPrimary,
+         ),
+         elevation = CardDefaults.cardElevation(
+            defaultElevation = 5.dp,
+            pressedElevation = 1.dp
+         )
+      ) {
+         var refreshCount by remember {
+            mutableStateOf(2)
+         }
+         if (refreshCount != 1) {
+            if (groups.isEmpty()) {
+               Text(
+                  text = "Guruhlar mavjud emas",
+                  style = MaterialTheme.typography.titleLarge,
+                  modifier = Modifier.align(Alignment.CenterHorizontally)
+               )
+            } else {
+               for (group in groups) {
+                  Row(
+                     modifier = Modifier
+                        .fillMaxWidth()
+                        .height(75.dp)
+                        .padding(vertical = 10.dp, horizontal = 5.dp)
+                        .clip(shape = RoundedCornerShape(5.dp))
+                        .background(Color(0xFFC1BFBF))
+                        .clickable {
+                           onGroupClick(group.id)
+                        },
+                     verticalAlignment = Alignment.CenterVertically
+                  ) {
+                     Spacer(modifier = Modifier.width(10.dp))
+                     Column {
+                        val count = database.getStudentCountByGroupId(group.id)
+                        Text(text = group.name, style = MaterialTheme.typography.titleMedium)
+                        Text(
+                           text = "o'quvchilar soni: $count",
+                           style = MaterialTheme.typography.labelMedium,
+                           color = Color(0xFF1D192B)
+                        )
+                     }
+                     Spacer(modifier = Modifier.weight(1f))
                      Row(
                         modifier = Modifier
-                           .fillMaxWidth()
-                           .height(50.dp)
-                           .padding(vertical = 10.dp, horizontal = 5.dp)
-                           .clip(shape = RoundedCornerShape(5.dp))
-                           .background(Color(0xFFC1BFBF))
-                           .clickable {
-                              onGroupClick(group.id)
-                           },
+                           .fillMaxHeight()
+                           .padding(end = 10.dp),
+                        horizontalArrangement = Arrangement.spacedBy(5.dp),
                         verticalAlignment = Alignment.CenterVertically
                      ) {
-                        Spacer(modifier = Modifier.width(10.dp))
-                        Column {
-                           val count = database.getStudentCountByGroupId(group.id)
-                           Text(text = group.name, style = MaterialTheme.typography.titleMedium)
-                           Text(
-                              text = "o'quvchilar soni: $count",
-                              style = MaterialTheme.typography.labelMedium,
-                              color = Color(0xFF1D192B)
+                        IconBox(
+                           background = Color.Green.copy(alpha = 0.7f),
+                           icon = Icons.Default.RemoveRedEye
+                        ) {
+                           onGroupViewClick(group.id)
+                        }
+                        IconBox(
+                           background = Color.Yellow.copy(alpha = 0.7f),
+                           icon = Icons.Default.Edit
+                        ) {
+                           onGroupEditClick(group.id)
+                        }
+                        var showDialog by remember {
+                           mutableStateOf(false)
+                        }
+                        if (showDialog) {
+                           AlertDialog(
+                              onDismissRequest = { showDialog = false },
+                              confirmButton = {
+                                 TextButton(onClick = {
+                                    showDialog = false
+                                    database.deleteGroup(group.id)
+                                    refreshCount += 1
+                                 }) {
+                                    Icon(
+                                       imageVector = Icons.Default.Check,
+                                       contentDescription = null,
+                                       Modifier.size(20.dp)
+                                    )
+                                    Spacer(modifier = Modifier.width(10.dp))
+                                    Text(text = "Ok", fontSize = 18.sp)
+                                 }
+                              },
+                              dismissButton = {
+                                 TextButton(onClick = {
+                                    showDialog = false
+                                 }) {
+                                    Icon(
+                                       imageVector = Icons.Default.Close,
+                                       contentDescription = null,
+                                       Modifier.size(20.dp)
+                                    )
+                                    Spacer(modifier = Modifier.width(10.dp))
+                                    Text(text = "Cancel", fontSize = 18.sp)
+                                 }
+                              },
+                              title = {
+                                 Text(text = "${group.name} guruhuni o'chirmoqchimisz")
+                                 Divider()
+                              }
                            )
                         }
-                        Spacer(modifier = Modifier.weight(1f))
-                        Row(
-                           modifier = Modifier.fillMaxHeight(),
-                           horizontalArrangement = Arrangement.spacedBy(15.dp)
+                        IconBox(
+                           background = Color.Red.copy(alpha = 0.7f),
+                           icon = Icons.Default.Delete
                         ) {
-                           IconBox(
-                              background = Color.Green.copy(alpha = 0.7f),
-                              icon = Icons.Default.RemoveRedEye
-                           ) {
-                              onGroupViewClick(group.id)
-                           }
-                           IconBox(
-                              background = Color.Yellow.copy(alpha = 0.7f),
-                              icon = Icons.Default.Edit
-                           ) {
-                              onGroupEditClick(group.id)
-                           }
-                           IconBox(
-                              background = Color.Red.copy(alpha = 0.7f),
-                              icon = Icons.Default.Delete
-                           ) {
-                              database.deleteGroup(group.id)
-                              refreshCount += 1
-                           }
+                           showDialog = true
                         }
                      }
                   }
                }
             }
          }
-
       }
-
    }
+
 }
 
 @Composable
@@ -248,7 +316,8 @@ fun IconBox(
       modifier = Modifier
          .width(30.dp)
          .height(30.dp)
-         .background(background)
+         .clip(shape = RoundedCornerShape(2.dp))
+         .background(background.copy(alpha = 0.5f))
          .clickable { action() },
       contentAlignment = Alignment.Center
    ) {

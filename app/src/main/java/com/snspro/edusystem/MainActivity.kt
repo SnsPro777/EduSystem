@@ -14,6 +14,7 @@ import com.snspro.edusystem.ui.screen.HomeScreen
 import com.snspro.edusystem.ui.screen.courses.AddStudentScreen
 import com.snspro.edusystem.ui.screen.courses.AllCoursesScreen
 import com.snspro.edusystem.ui.screen.courses.CourseDetailScreen
+import com.snspro.edusystem.ui.screen.groups.AllGroupsScreen
 import com.snspro.edusystem.ui.screen.groups.CourseGroupsScreen
 import com.snspro.edusystem.ui.screen.mentors.AddMentorScreen
 import com.snspro.edusystem.ui.screen.mentors.AllMentorsScreen
@@ -83,9 +84,33 @@ class MainActivity : ComponentActivity() {
 
          navigation<Groups>(startDestination = CourseGroups) {
             composable<CourseGroups> {
-               CourseGroupsScreen()
+               CourseGroupsScreen(
+                  database =db,
+                  onBackClick = { navController.popBackStack() },
+                  onCourseItemClick ={
+                     navController.navigate(AllGroups(it.id))
+                  }
+
+               )
             }
-            composable<AllGroups> { }
+            composable<AllGroups> {
+               val courseId = it.toRoute<AllGroups>().courseId
+               AllGroupsScreen(
+                  database = db,
+                  courseId = courseId,
+                  onBackClick = { navController.popBackStack() },
+                  onGroupClick = {
+
+                  },
+                  onGroupViewClick = {
+
+                  },
+                  onGroupEditClick = {
+
+                  }
+               )
+
+            }
             composable<GroupDetail> { }
          }
 

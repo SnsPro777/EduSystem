@@ -70,7 +70,6 @@ fun TopBarIcon(
    onClick: () -> Unit,
    icon: ImageVector
 ) {
-   Spacer(modifier = Modifier.width(10.dp))
    IconButton(onClick = onClick) {
       Icon(
          imageVector = icon,
@@ -79,4 +78,5 @@ fun TopBarIcon(
          tint = MaterialTheme.colorScheme.onPrimary
       )
    }
+   Spacer(modifier = Modifier.width(10.dp))
 }
